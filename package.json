@@ -5,9 +5,20 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
-    "start": "wrangler dev"
+    "start": "wrangler dev",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "jest": {
+    "transform": {}
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "wrangler": "^3.0.0"
-  }
+  },
+  "dependencies": {
+    "@uniswap/sdk-core": "^4.2.0",
+    "@uniswap/v3-sdk": "^3.11.0",
+    "ethers": "^5.7.2"
+  },
+  "type": "module"
 }
