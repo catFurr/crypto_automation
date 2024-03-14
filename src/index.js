@@ -10,34 +10,7 @@
 
 export default {
 	async fetch(request, env, ctx) {
-		const COINMARKETCAP_API = env.COINMARKETCAP_API
-		const COINMARKETCAP_URL = env.COINMARKETCAP_URL
-		const DISCORD_URL = env.DISCORD_URL
-		try {
-			let { btcPrice } = await getLatestPrice(COINMARKETCAP_API, COINMARKETCAP_URL)
-
-			const threshold = 70000;
-			let isThresholdReached = compareThreshold(btcPrice, threshold)
-
-			if (isThresholdReached) {
-				let message = "Bitcoin Price Fell Below the Threshold!";
-				message += "\ncurrent price: " + String(btcPrice)
-				message += "\nthreshold: " + String(threshold)
-				await callDiscordHook(DISCORD_URL, message)
-			}
-		} catch (error) {
-			let message = "Error in fetch handler: " + String(error);
-			console.error(message)
-			try {
-				await callDiscordHook(DISCORD_URL, message)
-			} catch (discord_error) {
-				console.error("Error in calling Discord: ", discord_error)
-			}
-
-			return new Response.error(message)
-		}
-
-		return new Response("Completed.");
+		return new Response("Hello World!");
 	},
 };
 

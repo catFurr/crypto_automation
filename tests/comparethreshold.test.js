@@ -1,3 +1,4 @@
+// Testing compareThreshold function
 
 import { compareThreshold } from '../src/index';
 
@@ -5,22 +6,32 @@ import { compareThreshold } from '../src/index';
 // Either throw an error or return bool
 // function compareThreshold (newPrice, threshold) {}
 
-test('newprice > thresh returns false', () => {
-    expect(compareThreshold(5, 2)).toBe(false);
+test('newPrice > threshold returns false', () => {
+    expect(compareThreshold(5, 1)).toBe(false);
 });
 
-test('newprice < thresh returns true', () => {
-    expect(compareThreshold(1, 4)).toBe(true);
-});
-
-test('newprice = thresh returns false', () => {
+test('newPrice = threshold returns false', () => {
     expect(compareThreshold(5, 5)).toBe(false);
 });
 
-// test('newprice as string, throws error', () => {
-//     expect(compareThreshold("error", 2)).toBe(false);
-// });
+test('newPrice < threshold returns true', () => {
+    expect(compareThreshold(1, 5)).toBe(true);
+});
 
-// test('thresh as string, throws error', () => {
-//     expect(compareThreshold(1, "error")).toBe(false);
-// });
+test('bad newPrice type throws error', () => {
+    expect.assertions(1);
+    try {
+        compareThreshold("error", 5)
+    } catch (error) {
+        expect(error).toMatch("Invalid price value!")
+    }
+});
+
+test('bad threshold type throws error', () => {
+    expect.assertions(1);
+    try {
+        compareThreshold(5, "error")
+    } catch (error) {
+        expect(error).toMatch("Invalid threshold value!")
+    }
+});
