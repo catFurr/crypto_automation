@@ -11,33 +11,36 @@ config({ path: './.dev.vars' })
 const URL = process.env.DISCORD_URL
 
 test('call returns void', async () => {
-    console.log(URL)
-    await callDiscordHook(URL, "Test: call returns void")
+    let response = await callDiscordHook(URL, "Test: call returns void")
+    expect(response).toBe(undefined)
 });
 
 test('wrong url throws error', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         await callDiscordHook("error", "Test")
     } catch (error) {
-        expect(error).toMatch("Invalid URL!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Invalid URL!');
     }
 });
 
 test('bad message type throws error', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         await callDiscordHook(URL, 123)
     } catch (error) {
-        expect(error).toMatch("Invalid message value!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Invalid message value!');
     }
 });
 
 test('bad url type throws error', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         await callDiscordHook(123, "Test")
     } catch (error) {
-        expect(error).toMatch("Invalid URL!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Invalid URL!');
     }
 });

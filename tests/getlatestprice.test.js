@@ -26,37 +26,41 @@ test('call returns object', async () => {
 });
 
 test('wrong api_key throws error', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         await getLatestPrice("wrong key", URL)
     } catch (error) {
-        expect(error).toMatch("Invalid API Key!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Server returned bad response code: 401');
     }
 });
 
 test('wrong url throws error', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         await getLatestPrice("wrong key", "wrong url")
     } catch (error) {
-        expect(error).toMatch("Invalid URL!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Invalid URL!');
     }
 });
 
 test('bad api_key type throws error', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         await getLatestPrice(123, URL)
     } catch (error) {
-        expect(error).toMatch("Invalid API Key!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Invalid API Key!');
     }
 });
 
 test('bad url type throws error', async () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         await getLatestPrice("wrong key", 123)
     } catch (error) {
-        expect(error).toMatch("Invalid URL!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Invalid URL!');
     }
 });

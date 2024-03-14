@@ -19,19 +19,21 @@ test('newPrice < threshold returns true', () => {
 });
 
 test('bad newPrice type throws error', () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         compareThreshold("error", 5)
     } catch (error) {
-        expect(error).toMatch("Invalid price value!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Invalid price value!');
     }
 });
 
 test('bad threshold type throws error', () => {
-    expect.assertions(1);
+    expect.assertions(2);
     try {
         compareThreshold(5, "error")
     } catch (error) {
-        expect(error).toMatch("Invalid threshold value!")
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe('Invalid threshold value!');
     }
 });
