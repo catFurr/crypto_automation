@@ -12,7 +12,7 @@ export default {
 	async fetch(request, env, ctx) {
 		let resp = await handleEvent(env)
 
-		return new Response(resp);
+		return resp;
 	},
 
 	async scheduled(event, env, ctx) {
@@ -27,7 +27,7 @@ async function handleEvent (env) {
 	try {
 		let { btcPrice } = await getLatestPrice(COINMARKETCAP_API, COINMARKETCAP_URL)
 
-		const threshold = 70000;
+		const threshold = 60000;
 		let isThresholdReached = compareThreshold(btcPrice, threshold)
 
 		if (isThresholdReached) {
@@ -45,10 +45,10 @@ async function handleEvent (env) {
 			console.error("Error in calling Discord: ", discord_error)
 		}
 
-		return message;
+		return new Response(message, { status: 500, statusText: "Server Error" });
 	}
 
-	return "Completed.";
+	return new Response("Completed.");
 }
 
 // Fetch the latest coin prices
