@@ -2,6 +2,8 @@
 
 import { unstable_dev } from "wrangler";
 
+import custom_worker from "../src/index"
+
 describe("Worker", () => {
   let worker;
 
@@ -20,4 +22,9 @@ describe("Worker", () => {
     const text = await resp.text();
     expect(text).toMatchInlineSnapshot(`"Completed."`);
   });
+
+  it("should return an error code.", async () => {
+    const resp = await custom_worker.fetch(null, {}, null)
+    expect(resp.ok).toBeFalsy()
+  })
 });
