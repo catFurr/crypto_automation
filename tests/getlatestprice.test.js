@@ -30,7 +30,7 @@ test('wrong api_key throws error', async () => {
     try {
         await getLatestPrice("wrong key", URL)
     } catch (error) {
-        expect(error.message).toContain('Server returned bad response code');
+        expect(error.message).toContain('server returned bad response code');
     }
 });
 
@@ -48,7 +48,7 @@ test('bad api_key type throws error', async () => {
     try {
         await getLatestPrice(123, URL)
     } catch (error) {
-        expect(error.message).toContain('Server returned bad response code');
+        expect(error.message).toContain('server returned bad response code');
     }
 });
 

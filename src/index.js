@@ -10,9 +10,12 @@
 
 export default {
 	async fetch(request, env, ctx) {
-		let resp = await handleEvent(env)
-
-		return resp;
+		try{
+			let resp = await handleEvent(env)
+			return new Response(resp)
+		} catch (error) {
+			return new Response(error.message, { status: 500, statusText: "Server Error" });
+		}
 	},
 
 	async scheduled(event, env, ctx) {
@@ -37,18 +40,17 @@ async function handleEvent (env) {
 			await callDiscordHook(DISCORD_URL, message)
 		}
 	} catch (error) {
-		let message = "Error in fetch handler: " + String(error);
-		console.error(message)
+		console.error(error)
 		try {
-			await callDiscordHook(DISCORD_URL, message)
+			await callDiscordHook(DISCORD_URL, error.message)
 		} catch (discord_error) {
-			console.error("Error in calling Discord: ", discord_error)
+			console.error(discord_error)
 		}
 
-		return new Response(message, { status: 500, statusText: "Server Error" });
+		throw error
 	}
 
-	return new Response("Completed.");
+	return "Completed.";
 }
 
 // Fetch the latest coin prices
@@ -71,7 +73,11 @@ export async function getLatestPrice (api_key, url) {
 	});
 
 	if (!response.ok) {
-		throw new Error("Server returned bad response code: " + String(response.status))
+		const data = await response.text()
+		let message = "CoinMarketCap server returned bad response code: " + String(response.status)
+		message += "\nresponse message: " + String(response.statusText)
+		message += "\nserver response: " + data
+		throw new Error(message)
 	}
 
 	const data = await response.json();
@@ -106,6 +112,10 @@ export async function callDiscordHook (url, message) {
 	});
 
 	if (!response.ok) {
-		throw new Error("Server returned bad response code: " + String(response.status))
+		const data = await response.text()
+		let message = "Discord server returned bad response code: " + String(response.status)
+		message += "\nresponse message: " + String(response.statusText)
+		message += "\nserver response: " + data
+		throw new Error(message)
 	}
 }
