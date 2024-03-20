@@ -7,28 +7,29 @@ import { callDiscordHook  } from "../src/index";
 // async function callDiscordHook (url, message) {}
 
 import { config } from 'dotenv'
-config({ path: './.dev.vars' })
+config({ path: './.env' })
 const URL = process.env.DISCORD_URL
 
 test('call returns void', async () => {
-    let response = await callDiscordHook(URL, "Test: call returns void")
-    expect(response).toBeUndefined();
+    await expect(
+        callDiscordHook(URL, "Test: call returns void")
+    ).resolves.toBeUndefined()
 });
 
-test('wrong url throws error', async () => {
-    expect.assertions(1);
-    try {
-        await callDiscordHook("error", "Test")
-    } catch (error) {
-        expect(error.message).toContain("Failed to parse URL")
-    }
+// test('wrong url throws error', async () => {
+//     await expect(
+//         callDiscordHook("error", "https://google.com/")
+//     ).rejects.toThrow()
+// });
+
+test('bad url throws error', async () => {
+    await expect(
+        callDiscordHook("error", "Test")
+    ).rejects.toThrow("Failed to parse URL")
 });
 
 test('bad url type throws error', async () => {
-    expect.assertions(1);
-    try {
-        await callDiscordHook(123, "Test")
-    } catch (error) {
-        expect(error.message).toContain("Failed to parse URL")
-    }
+    await expect(
+        callDiscordHook(123, "Test")
+    ).rejects.toThrow("Failed to parse URL")
 });

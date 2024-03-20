@@ -13,7 +13,7 @@ import { getLatestPrice } from "../src/index";
 // async function getLatestPrice (api_key, url) {}
 
 import { config } from 'dotenv'
-config({ path: './.dev.vars' })
+config({ path: './.env' })
 const API_KEY = process.env.COINMARKETCAP_API_KEY
 const URL = process.env.COINMARKETCAP_URL
 
@@ -25,38 +25,32 @@ test('call returns object', async () => {
       }))
 });
 
-test('wrong api_key throws error', async () => {
-    expect.assertions(1);
-    try {
-        await getLatestPrice("wrong key", URL)
-    } catch (error) {
-        expect(error.message).toContain('server returned bad response code');
-    }
+test("wrong api_key throws error", async () => {
+    await expect(
+        getLatestPrice("wrong key", URL)
+    ).rejects.toThrow("server returned bad response code")
 });
 
-test('wrong url throws error', async () => {
-    expect.assertions(1);
-    try {
-        await getLatestPrice("wrong key", "wrong url")
-    } catch (error) {
-        expect(error.message).toContain("Failed to parse URL")
-    }
+test("bad url throws error", async () => {
+    await expect(
+        getLatestPrice("wrong key", "wrong url")
+    ).rejects.toThrow("Failed to parse URL")
 });
 
-test('bad api_key type throws error', async () => {
-    expect.assertions(1);
-    try {
-        await getLatestPrice(123, URL)
-    } catch (error) {
-        expect(error.message).toContain('server returned bad response code');
-    }
+test("wrong url throws error", async () => {
+    await expect(
+        getLatestPrice("wrong key", "https://google.com/")
+    ).rejects.toThrow()
 });
 
-test('bad url type throws error', async () => {
-    expect.assertions(1);
-    try {
-        await getLatestPrice("wrong key", 123)
-    } catch (error) {
-        expect(error.message).toContain("Failed to parse URL")
-    }
+test("bad api_key type throws error", async () => {
+    await expect(
+        getLatestPrice(123, URL)
+    ).rejects.toThrow("server returned bad response code")
+});
+
+test("bad url type throws error", async () => {
+    await expect(
+        getLatestPrice("wrong key", 123)
+    ).rejects.toThrow("Failed to parse URL")
 });
