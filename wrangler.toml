@@ -11,6 +11,7 @@ minify = true
 [vars]
 # MY_VARIABLE = "production_value"
 COINMARKETCAP_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
+THRESHOLD = 60000
 
 [triggers]
 # Schedule cron triggers:
@@ -64,6 +65,8 @@ crons = [ "*/15 * * * *"]
 
 [env.test.vars]
 COINMARKETCAP_URL = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest"
+THRESHOLD = 60000
+ENVIRONMENT = "DEV"
 
 [env.test.triggers]
 # Empty for testing
@@ -72,6 +75,8 @@ crons = []
 [env.blindtest.vars]
 # Wrong URL for testing
 COINMARKETCAP_URL = "https://google.com/"
+THRESHOLD = 60000
+ENVIRONMENT = "DEV"
 
 [env.blindtest.triggers]
 # Empty for testing

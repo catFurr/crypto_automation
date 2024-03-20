@@ -8,6 +8,8 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+import { deleteDiscordMessage } from "./utils";
+
 export default {
 	async fetch(request, env, ctx) {
 		try{
@@ -27,24 +29,31 @@ async function handleEvent (env) {
 	const COINMARKETCAP_API = env.COINMARKETCAP_API_KEY
 	const COINMARKETCAP_URL = env.COINMARKETCAP_URL
 	const DISCORD_URL = env.DISCORD_URL
+	const IS_DEV_ENV = env.ENVIRONMENT == "DEV"
+	const THRESHOLD = env.THRESHOLD
 	try {
 		let { btcPrice } = await getLatestPrice(COINMARKETCAP_API, COINMARKETCAP_URL)
 
-		const threshold = 60000;
-		let isThresholdReached = compareThreshold(btcPrice, threshold)
+		let isThresholdReached = compareThreshold(btcPrice, THRESHOLD)
 
 		if (isThresholdReached) {
 			let message = "Bitcoin Price Fell Below the Threshold!";
 			message += "\ncurrent price: " + String(btcPrice)
-			message += "\nthreshold: " + String(threshold)
-			await callDiscordHook(DISCORD_URL, message)
+			message += "\nthreshold: " + String(THRESHOLD)
+			const message_id = await callDiscordHook(DISCORD_URL, message)
+
+			if (IS_DEV_ENV) {
+				deleteDiscordMessage(DISCORD_URL, message_id)
+			}
 		}
 	} catch (error) {
 		console.error(error)
-		try {
-			await callDiscordHook(DISCORD_URL, error.message)
-		} catch (discord_error) {
-			console.error(discord_error)
+		if (!IS_DEV_ENV) {
+			try {
+				await callDiscordHook(DISCORD_URL, error.message)
+			} catch (discord_error) {
+				console.error(discord_error)
+			}
 		}
 
 		throw error
@@ -105,7 +114,7 @@ export async function callDiscordHook (url, message) {
 	const urlencoded = new URLSearchParams();
 	urlencoded.append("content", message);
 
-	var response = await fetch(url, {
+	var response = await fetch(url+"?wait=true", {
 		method: "POST",
 		headers: myHeaders,
 		body: urlencoded
@@ -118,4 +127,8 @@ export async function callDiscordHook (url, message) {
 		message += "\nserver response: " + data
 		throw new Error(message)
 	}
+
+	const data = await response.json()
+
+	return data.id
 }
