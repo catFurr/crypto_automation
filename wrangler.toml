@@ -4,6 +4,7 @@ compatibility_date = "2024-03-12"
 
 send_metrics = false
 minify = true
+workers_dev = false
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)
 # Note: Use secrets to store sensitive data.
@@ -18,7 +19,7 @@ THRESHOLD = 60000
 # - At every 3rd minute
 # - At 3PM on first day of the month
 # - At 11:59PM on the last weekday of the month
-crons = [ "*/15 * * * *"]
+crons = [ "*/10 * * * *"]
 
 # Bind a KV Namespace. Use KV as persistent storage for small key-value pairs.
 # Docs: https://developers.cloudflare.com/workers/runtime-apis/kv
